@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+<section id="content">
+<section class="wrapper">
+
+        <div class="card">
+        		<p>{{inboxes}} Inbox</p>
+				<p>{{sent_items}} Sent Items</p>
+				<a href="{% url 'users:received_mail' %}">Inbox</a>
+		        <a href="{% url 'users:sent_mail' %}">Sent Mail</a>
+		        <br>
+		        <br>
+                {% if instances %}
+				<table id = "received_mail">
+					<tr>
+						<th>Message</th>
+						<th>Date</th>
+						<th>Action</th>
+					</tr>
+					{% for instance in instances %}
+					<tr>
+						<td>
+							{% if instance.creator %}
+								<p>{{instance.creator|default:"-"}}</p>
+							{% endif %}
+							<p>{{instance.message}}</p>
+							<p>{{instance.phone}}</p>
+							<p>
+							<a href="{% url 'ads:view_advertisement' instance.ad.pk %}" >
+							Ad title: {{instance.ad.title}}<br> 
+							id : {{instance.ad.id}}
+							</a>
+							</p>
+						</td>
+						<td>{{instance.date}}</td>
+						<td>
+							<a href="{% url 'users:inbox_deleted' instance.pk %}">Delete</a>
+							{% if instance.creator %}
+							<a href="{% url 'users:create_mail' instance.creator.pk instance.ad.pk %}">Message</a>
+							{% endif %}
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+				{% else %}
+				<br/>Nothing Found.
+				{% endif %}
+        </div>
+</section>
+</section>
+{% endblock %}

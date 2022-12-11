@@ -1,0 +1,59 @@
+name not exist in database
+Abkhazia
+Abkhazia
+Akrotiri and Dhekelia
+Alderney
+Alderney
+Alderney
+Ascension Island
+Ascension Island
+Czech Republic
+Côte d'Ivoire
+Northern Cyprus
+Republic of Artsakh
+Republic of Artsakh
+Sahrawi Republic
+Sahrawi Republic
+Sahrawi Republic
+Sahrawi Republic
+Sint Eustatius
+Somaliland
+South Ossetia
+São Tomé and Príncipe
+Transnistria
+Tristan da Cunha
+Tristan da Cunha
+
+name not exit in text file 
+
+Aland Islands - Aland Islands
+American Samoa - American Samoa
+Antarctica - Antarctica
+Bouvet Island - Bouvet Island
+Christmas Island - Christmas Island
+Czechia - Czechia
+Democratic Republic of the Congo - Democratic Republic of the Congo
+French Guiana - French Guiana
+French Southern Territories - French Southern Territories
+Greenland - Greenland
+Guadeloupe - Guadeloupe
+Guam - Guam
+Heard Island and McDonald Islands - Heard Island and McDonald Islands
+Ivory Coast - Ivory Coast
+Martinique - Martinique
+Mayotte - Mayotte
+Netherlands Antilles - Netherlands Antilles
+Norfolk Island - Norfolk Island
+Northern Mariana Islands - Northern Mariana Islands
+Puerto Rico - Puerto Rico
+Reunion - Reunion
+Saint Barthelemy - Saint Barthelemy
+Saint Martin - Saint Martin
+Saint Pierre and Miquelon - Saint Pierre and Miquelon
+Sao Tome and Principe - Sao Tome and Principe
+Serbia and Montenegro - Serbia and Montenegro
+Svalbard and Jan Mayen - Svalbard and Jan Mayen
+Tokelau - Tokelau
+United States Minor Outlying Islands - United States Minor Outlying Islands
+U.S. Virgin Islands - U.S. Virgin Islands
+Western Sahara - Western Sahara

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>{% block title %}{{title}}{% endblock %} | {{app_name}}</title>
+		{% load static %}
+		<link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicon.png' %}" />
+		<link rel="stylesheet" href="{% static 'css/style.css' %}" type="text/css" />
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+		<meta property="og:image" content="images/og.png" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+	</head>
+	<body>
+		<header>
+			<section class="wrapper">
+				<section class="top">
+					<h1><a href="/"><img src="{% static 'images/logo.png' %}" alt="Image"></a></h1>
+					<div class="right">
+						<a href="{% url 'ads:create_advertisement' %}" class="button">Create Ad</a>
+						<div class="user right">
+							{% if request.user.is_authenticated %}
+								<a class="dropdown-button" href="javascript:void(0)">{{request.user.username}}</a>
+								<ul class="dropdown-list">
+									<li><a href="{% url 'ads:my_advertisements' %}">My Ads</a></li>
+									<li><a href="{% url 'users:received_mail' %}">Mail Box</a></li>
+									{% if request.user.is_superuser %}
+										<li><a href="{% url 'users:view_users' %}">Users</a></li>
+									{% else %}
+										<li><a href="{% url 'users:view_user' request.user.pk %}">Profile</a></li>
+									{% endif %}
+									<li><a href="{% url 'logout' %}">Logout</a></li>
+								</ul>
+							{% else %}
+								<a href="{% url 'login' %}" class="button">Login/Register</a>
+							{% endif %}
+						</div>	
+					</div>				
+					<br class="clear">
+				</section><!--(header > .wrapper >.top)--> 
+			</section><!--(header > .wrapper)-->
+		</header><!--(header)-->
+		{% block form %}{% endblock %}
+		{% block content %}{% endblock %}
+		<footer>
+			<section class="top">
+				<section class="wrapper">
+					<div class="logo">
+						<a href="/"><img src="{% static 'images/logo.png' %}" alt="Image"></a>
+					</div>
+					<div class="about">
+						<h4>About Us</h4>
+						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur, dolorum aspernatur nemo expedita numquam maxime reiciendis quas, excepturi eaque itaque eligendi iste ipsa, odio quisquam blanditiis earum ab libero! Qui.</p>
+					</div>
+					<div class="social">
+						<h4>follow Us</h4>
+						<a href="" title="Facebook" class="fb">&nbsp;</a>
+						<a href="" title="Twitter" class="twitter">&nbsp;</a>
+						<a href="" title="Instugram" class="instugram">&nbsp;</a>
+					</div>
+					<br class="clear" />
+				</section><!--(footer > .wrapper)-->
+			</section><!--(footer > .top)-->
+			<section class="bottom">
+				<section class="wrapper">
+					<p>&copy;2017 OND All right reserved. Developed by <a href="http://www.fyfnet.com" title="Fyfnet" target="_blank">Fyfnet</a></p>
+				</section><!--(footer > .bottom > .wrapper)-->
+			</section><!--(footer > .bottom)-->
+		</footer><!--(footer)-->
+		{% block static %}{% endblock %}
+	</body>
+</html>

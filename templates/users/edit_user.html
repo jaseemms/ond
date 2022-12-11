@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+<section id="content">
+<section class="wrapper">
+  <div class="card">
+    
+    <h2>{{ title }}</h2>
+    
+    <div class="">
+        
+        <form id = "edit_form" action="." method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="fieldWrapper">
+            {{ form.country.errors }}
+            <label for="{{ form.country.id_for_label }}">Country:</label>
+            {{ form.country }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.region.errors }}
+            <label for="{{ form.country.id_for_label }}">Region:</label>
+            {{ form.region }}
+        </div>
+        <div class="city fieldWrapper">
+            {{ form.city.errors }}
+            <label for="{{ form.city.id_for_label }}">City:</label>
+            {{ form.city }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.first_name.errors }}
+            <label for="{{ form.name.id_for_label }}">Name:</label>
+            {{ form.name }}
+        </div>
+        <div class="fieldWrapper">
+            {{ form.email.errors }}
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+            </div>
+
+        <div class="fieldWrapper">
+            {{ form.phone.errors }}
+            <label for="{{ form.phone.id_for_label }}">Contact Number:</label>
+            {{ form.phone }}
+        </div>
+
+        <div class="fieldWrapper">
+            {{ form.username.errors }}
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+           {{ form.username }}
+        </div>
+        
+        <button class="button button-block" type="submit" />Submit</button>
+
+        </form>
+
+      </div>
+          
+</div> <!-- /form -->       
+</div>  
+</section>
+</section>
+{% endblock %} 
+
+{% block static %}
+{% load static %}
+<script>
+    function ajax_select(selector,url){
+      var id = $(selector).val();
+      $.ajax({
+        method : "GET",
+        url : url,
+        dataType : 'json',
+        data : {
+          id : id,
+          selector : $(selector).attr("id"),
+          instance : "{% if instance %}{{instance.pk}}{% endif %}"
+        },
+        success : function(data){
+          var value_list = data['value_list'];
+
+          if($(selector).attr("id") == 'id_country'){
+            $('#id_region option:not([value=""])').remove();
+            $('#id_city option:not([value=""])').remove();
+            $('#id_currency option:not([value=""])').remove();
+            $('#id_city').parent().css("display","none");
+            $('#id_city').removeAttr("required");
+            for(i=0;i < value_list.length;i++) {
+              $('#id_region').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+            }
+            var currency_list = data['currency_list'];
+            for(i=0;i < currency_list.length;i++) {
+              $('#id_currency').append('<option value="'+currency_list[i][0]+'">'+currency_list[i][1]+'</option>');
+            }
+
+          }
+          if($(selector).attr("id") == 'id_region'){
+            $('#id_city option:not([value=""])').remove();
+            if(value_list.length > 0){
+              $('#id_city').attr("required","required");
+              $('#id_city').parent().css("display","block");
+            }else{
+              $('#id_city').removeAttr("required");
+              $('#id_city').parent().css("display","none");
+            }
+            for(i=0;i < value_list.length;i++) {
+              $('#id_city').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+            }
+          }
+        }
+      });
+    }
+    $('#id_country,#id_region').on('change',function(){
+      var selector = $(this);
+      var url = "{% url 'ads:get_ajax' %}";
+      ajax_select(selector,url);
+    });
+    $(window).on('load',function(){
+      if($('#id_region').val()==''){
+        $('#id_country').val('');
+      }
+      if($('#id_region').val()!='' && $('#id_city').val()!=''){
+        $('#id_city').attr("required","required");
+        $('#id_city').parent().css("display","block");
+      }else{
+        alert($('#id_city').val());
+        $('#id_city').removeAttr("required","required");
+        $('#id_city').parent().css("display","none");
+      }
+    });
+  </script>
+{% endblock %}

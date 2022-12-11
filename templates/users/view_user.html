@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+<section id="content">
+<section class="wrapper">
+    <div class="card">
+			<table id = "view_user">
+				<tr>
+					<td> Username</td>
+					<td>{{instance.username}}</td>
+				</tr>
+				<tr>
+					<td> Name</td>
+					<td>{{instance.name}}</td>
+				</tr>
+				<tr>
+					<td> Email</td>
+					<td>{{instance.email}}</td>
+				</tr>
+				<tr>
+					<td> Contact Number</td>
+					<td>{{instance.phone}}</td>
+				</tr>
+				<tr>
+					<td> Country</td>
+					<td>{{instance.country}}</td>
+				</tr>
+				<tr>
+					<td> Region</td>
+					<td>{{instance.region}}</td>
+				</tr>
+				{% if instance.city %}
+				<tr>
+					<td> Contact Number</td>
+					<td>{{instance.phone}}</td>
+				</tr>
+				{% endif %}	
+			</table>
+			{% if not request.user.is_superuser %}
+			<a class="message" href="{% url 'users:edit_user' pk=instance.pk %}">Edit Profile</a>
+			<a class="message" href="{% url 'password_change' %}">Change Password </a>
+			<br class="clear"/>
+			{% endif %}
+    </div>
+</section>
+</section>
+{% endblock %}

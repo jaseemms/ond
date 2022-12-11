@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+<section id="content">
+<section class="wrapper">
+    <div class="card">
+    	<p>{{inboxes}} Inbox</p>
+		<p>{{sent_items}} Sent Items</p>
+		<a href="{% url 'users:received_mail' %}">Inbox</a>
+        <a href="{% url 'users:sent_mail' %}">Sent Mail</a>
+        <div>
+            {% if instances %}
+			<table id = "sent_mail">
+				<tr>
+					<th>To</th>
+					<th>Message</th>
+					<th>Date</th>
+					<th>Action</th>
+				</tr>
+				{% for instance in instances %}
+				<tr>
+					<td>{{instance.to}}</td>
+					<td>{{instance.message}}</td>
+					<td>{{instance.date}}</td>
+					<td><a href="{% url 'users:sentitems_deleted' instance.pk %}">Delete</a></td>
+				</tr>
+				{% endfor %}
+			</table>
+			{% else %}
+			<br/>Nothing Found
+			{% endif %}
+        </div>
+    </div>
+</section>
+</section>
+{% endblock %}

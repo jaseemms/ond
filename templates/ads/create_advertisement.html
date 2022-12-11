@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section id="content">
+<section class="wrapper">
+<form class="card" method="POST" action="" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ form.non_field_errors }}
+
+	<div class="fieldWrapper">
+	    {{ form.title.errors }}
+	    <label for="{{ form.title.id_for_label }}">{{ form.title.label }}<span class="important">*</span>:</label>
+	    {{ form.title }}
+	</div>
+	<div class="fieldWrapper">
+	    {{ form.description.errors }}
+	    <label for="{{ form.description.id_for_label }}">{{ form.description.label }}<span class="important">*</span>:</label>
+	    {{ form.description }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.country.errors }}
+		<label for="{{ form.country.id_for_label }}">{{ form.country.label }}<span class="important">*</span>:</label>
+		{{ form.country }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.region.errors }}
+		<label for="{{ form.region.id_for_label }}">{{ form.region.label }}<span class="important">*</span>:</label>
+		{{ form.region }}
+	</div>
+	<div class="city fieldWrapper" style="display: none;"">
+		{{ form.city.errors }}
+		<label for="{{ form.city.id_for_label }}">{{ form.city.label }}<span class="important">*</span>:</label>
+		{{ form.city }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.category.errors }}
+		<label for="{{ form.category.id_for_label }}">{{ form.category.label }}<span class="important"">*</span>:</label>
+		{{ form.category }}
+	</div>
+	<div class="subcategory fieldWrapper">
+		{{ form.subcategory.errors }}
+		<label for="{{ form.subcategory.id_for_label }}">{{ form.subcategory.label }}<span class="important"">*</span>:</label>
+		{{ form.subcategory }}
+	</div>
+	<div class="currency fieldWrapper" style="display: none;">
+		{{ form.currency.errors }}
+		<label for="{{ form.currency.id_for_label }}">{{ form.currency.label }}<span class="important">*</span>:</label>
+		{{ form.currency }}
+	</div>
+	<div class="price fieldWrapper" style="display: none;">
+		{{ form.price.errors }}
+		<label for="{{ form.price.id_for_label }}">{{ form.price.label }}<span class="important">*</span>:</label>
+		{{ form.price }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.name.errors }}
+		<label for="{{ form.name.id_for_label }}">{{ form.name.label }}<span class="important">*</span>:</label>
+		{{ form.name }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.phone.errors }}
+		<label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}<span class="important">*</span>:</label>
+		{{ form.phone }}
+	</div>
+	<div class="fieldWrapper">
+	    {{ form.image1.errors }}
+	    <label for="{{ form.image1.id_for_label }}">{{ form.image1.label }}<span class="important">*</span>:</label>
+	    <img src="{% if instance.image1 %}{{ instance.image1.url }}{% else %}{% static 'images/noimage.png' %}{% endif %}" style="width:100px;height:100px;" >
+	    {{ form.image1 }}
+	</div>
+	<div class="fieldWrapper">
+	    {{ form.image2.errors }}
+	    <label for="{{ form.image2.id_for_label }}">{{ form.image2.label }}: </label>
+		<img src="{% if instance.image2 %}{{ instance.image2.url }}{% else %}{% static 'images/noimage.png' %}{% endif %}" style="width:100px;height:100px;" >
+	    {{ form.image2 }}
+	</div>
+	<div class="fieldWrapper">
+		{{ form.image3.errors }}
+		<label for="{{ form.image3.id_for_label }}">{{ form.image3.label }}:</label>
+		<img src="{% if instance.image3 %}{{ instance.image3.url }}{% else %}{% static 'images/noimage.png' %}{% endif %}" style="width:100px;height:100px;" >
+		{{form.image3}}
+	</div>
+	<div class="fieldWrapper">
+		{{form.image4.errors}}
+		<label for="{{ form.image4.id_for_label }}">{{ form.image4.label }}:</label>
+		<img src="{% if instance.image4 %}{{ instance.image4.url }}{% else %}{% static 'images/noimage.png' %}{% endif %}" style="width:100px;height:100px;" >
+		{{ form.image4 }}
+	</div>
+	
+	<p>By clicking 'Submit' you agree to our <a href="{% url 'users:terms' %}" >Terms and Conditions</a> &amp; <a href="{% url 'users:ruels' %}">Rules of Posting</a></p>
+	<input type="submit" value="Submit" />
+</form>
+</section>
+</section>
+{% endblock %}
+
+{% block static %}
+	{% load static %}
+	<script>
+		function ajax_select(selector,url){
+			var id = $(selector).val();
+			$.ajax({
+				method : "GET",
+				url : url,
+				dataType : 'json',
+				data : {
+					id : id,
+					selector : $(selector).attr("id"),
+						"instance": "{% if instance %}{{instance.pk}}{% endif %}"
+				},
+				success : function(data){
+					var value_list = data['value_list'];
+
+					if($(selector).attr("id") == 'id_country'){
+						$('#id_region option:not([value=""])').remove();
+						$('#id_city option:not([value=""])').remove();
+						$('#id_currency option:not([value=""])').remove();
+						$('#id_city').parent().css("display","none");
+						$('#id_city').removeAttr("required");
+						for(i=0;i < value_list.length;i++) {
+							$('#id_region').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+						}
+						var currency_list = data['currency_list'];
+						for(i=0;i < currency_list.length;i++) {
+							$('#id_currency').append('<option value="'+currency_list[i][0]+'">'+currency_list[i][1]+'</option>');
+						}
+
+					}
+					if($(selector).attr("id") == 'id_region'){
+						$('#id_city option:not([value=""])').remove();
+						if(value_list.length > 0){
+							$('#id_city').attr("required","required");
+							$('#id_city').parent().css("display","block");
+						}else{
+							$('#id_city').removeAttr("required");
+							$('#id_city').parent().css("display","none");
+						}
+						for(i=0;i < value_list.length;i++) {
+							$('#id_city').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+						}
+					}
+					if($(selector).attr("id") == 'id_category'){
+						$('.label,.property').remove();
+						$('.price,.currency').css("display","none");
+						$('.price input,.currency select').removeAttr("required");
+						$('#id_subcategory option:not([value=""])').remove();
+						for(i=0;i < value_list.length;i++) {
+							$('#id_subcategory').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+						}
+					}
+					if($(selector).attr("id") == 'id_subcategory'){
+						var has_price = data['has_price'];
+						var is_job = data['is_job'];
+						if(has_price=="True"){
+							$('.price,.currency').css("display","block");
+							$('.price input,.currency select').attr("required","required");
+							$('.price input').val("0.0");
+						}else if(is_job=="True"){
+							$('.price,.currency').css("display","block");
+							$('.price input,.currency select').attr("required","required");
+							$('.price input').val("0.0");
+							$('.price label').html("Salary");
+						}else{
+							$('.price,.currency').css("display","none");
+							$('.price input,.currency select').removeAttr("required");
+						}
+						$('.label,.property').remove();
+						var label_list = data['label_list'];
+						var property_list = data['property_list'];
+						for(i=0;i < label_list.length;i++) {
+							var html_content = '<div class="label fieldWrapper">';
+							html_content += '<label>'+label_list[i][0]+'<span class="important">*</span></label>: ';
+							html_content += '<select required name="'+label_list[i][0]+'">';
+							html_content += '<option>Select '+label_list[i][0]+'</option>';
+							var label_value_list = label_list[i][1];
+							for(j=0;j < label_value_list.length;j++){
+								if(label_value_list[j].length > 2){
+									html_content += '<option selected="selected" value="'+label_value_list[j][0]+'">'+label_value_list[j][1]+'</option>';
+								}else{
+									html_content += '<option value="'+label_value_list[j][0]+'">'+label_value_list[j][1]+'</option>';
+								}
+							}
+							html_content += '</select></div>';
+							$('.subcategory').after(html_content);
+						}
+						for(i=0;i < property_list.length;i++) {
+							var html_content = '<div class="property fieldWrapper">';
+							html_content += '<label>'+property_list[i][0]+'<span class="important">*</span></label>: ';
+							html_content += '<select required name="'+property_list[i][0]+'">';
+							html_content += '<option>Select '+property_list[i][0]+'</option>';
+							var property_value_list = property_list[i][2];
+							var pre_property = null;
+							for(j=0;j < property_value_list.length;j++){
+								if(property_value_list[j].length > 2){
+									if(j == property_value_list.length-1){
+										html_content += '<option selected="selected" value="'+property_value_list[j][0]+'">&gt; '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}else if(pre_property != null){
+										html_content += '<option selected="selected" value="'+property_value_list[j][0]+'">'+pre_property+' - '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}else{
+										html_content += '<option selected="selected" value="'+property_value_list[j][0]+'">&lt; '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}
+								}else{
+									if(j == property_value_list.length-1){
+										html_content += '<option value="'+property_value_list[j][0]+'">&gt; '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}else if(pre_property != null){
+										html_content += '<option value="'+property_value_list[j][0]+'">'+
+										pre_property+' - '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}else{
+										html_content += '<option value="'+property_value_list[j][0]+'">&lt; '+property_value_list[j][1]+' '+property_list[i][1]+'</option>';
+									}
+								}
+								pre_property = property_value_list[j][1];
+							}
+							html_content += '</select></div>';
+							$('.subcategory').after(html_content);
+						}
+
+					}
+				}
+			});
+		}
+		$('#id_country,#id_region,#id_category,#id_subcategory').on('change',function(){
+			var selector = $(this);
+			var url = "{% url 'ads:get_ajax' %}";
+			ajax_select(selector,url);
+		});
+		$('#id_image1,#id_image2,#id_image3,#id_image4').on('change',function(event){
+			var tmppath = URL.createObjectURL(event.target.files[0]);
+			$(this).prev().attr("src",tmppath);
+		});
+		$(window).on('load',function(){
+			if($('#id_region').val()==''){
+				$('#id_country').val('');
+			}
+			if($('#id_subcategory').val()==''){
+				$('#id_category').val('');
+			}
+			file1 = $("#id_image1")[0].files[0];
+			if(file1){
+				var tmppath = URL.createObjectURL(file1);
+				$("#id_image1").prev().attr("src",tmppath);
+			}
+			file2 = $("#id_image2")[0].files[0];
+			if(file2){
+				var tmppath = URL.createObjectURL(file2);
+				$("#id_image2").prev().attr("src",tmppath);
+			}
+			file3 = $("#id_image3")[0].files[0];
+			if(file3){
+				var tmppath = URL.createObjectURL(file3);
+				$("#id_image3").prev().attr("src",tmppath);
+			}
+			file4 = $("#id_image4")[0].files[0];
+			if(file4){
+				var tmppath = URL.createObjectURL(file4);
+				$("#id_image4").prev().attr("src",tmppath);
+			}
+			if($('#id_region').val()!='' && $('#id_city').val()!=''){
+				$('#id_city').attr("required","required");
+				$('#id_city').parent().css("display","block");
+			}
+			if($('#id_subcategory').val()!=''){
+				var selector = $('#id_subcategory');
+				var url = "{% url 'ads:get_ajax' %}";
+				ajax_select(selector,url);
+			}
+		});
+	</script>
+{% endblock %}

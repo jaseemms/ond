@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section id="content">
+<section class="wrapper">
+  <div class=" card">
+    <h2>{{ title }}</h2>
+    
+       <form action="{{ url }}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="fieldWrapper {% if field.errors %} has-error {% endif %}">
+          {{form.field.errors}}
+            <label class="control-label col-sm-2" for="{{field.id_for_label}}">{{field.label}} :</label>
+              {{field}}
+          </div>
+        {% endfor %}
+        <p>By clicking 'Submit' you agree to our <a href="{% url 'users:terms' %}" >Terms and Conditions</a> &amp; <a href="{% url 'users:ruels' %}">Rules of Posting</a></p>
+        <div class="form-group"> 
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form> 
+</div> <!-- /form -->
+</section>
+</section>
+{% endblock %} 
+
+{% block static %}
+{% load static %}
+<script>
+    function ajax_select(selector,url){
+      var id = $(selector).val();
+      $.ajax({
+        method : "GET",
+        url : url,
+        dataType : 'json',
+        data : {
+          id : id,
+          selector : $(selector).attr("id"),
+          instance : "{% if instance %}{{instance.pk}}{% endif %}"
+        },
+        success : function(data){
+          var value_list = data['value_list'];
+
+          if($(selector).attr("id") == 'id_country'){
+            $('#id_region option:not([value=""])').remove();
+            $('#id_city option:not([value=""])').remove();
+            $('#id_currency option:not([value=""])').remove();
+            $('#id_city').parent().css("display","none");
+            $('#id_city').removeAttr("required");
+            for(i=0;i < value_list.length;i++) {
+              $('#id_region').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+            }
+            var currency_list = data['currency_list'];
+            for(i=0;i < currency_list.length;i++) {
+              $('#id_currency').append('<option value="'+currency_list[i][0]+'">'+currency_list[i][1]+'</option>');
+            }
+
+          }
+          if($(selector).attr("id") == 'id_region'){
+            $('#id_city option:not([value=""])').remove();
+            if(value_list.length > 0){
+              $('#id_city').attr("required","required");
+              $('#id_city').parent().css("display","block");
+            }else{
+              $('#id_city').removeAttr("required");
+              $('#id_city').parent().css("display","none");
+            }
+            for(i=0;i < value_list.length;i++) {
+              $('#id_city').append('<option value="'+value_list[i][0]+'">'+value_list[i][1]+'</option>');
+            }
+          }
+        }
+      });
+    }
+    $('#id_country,#id_region').on('change',function(){
+      var selector = $(this);
+      var url = "{% url 'ads:get_ajax' %}";
+      ajax_select(selector,url);
+    });
+    $(window).on('load',function(){
+      if($('#id_region').val()==''){
+        $('#id_country').val('');
+      }
+      if($('#id_region').val()!='' && $('#id_city').val()!=''){
+        $('#id_city').attr("required","required");
+        $('#id_city').parent().css("display","block");
+      }else{
+        $('#id_city').removeAttr("required","required");
+        $('#id_city').parent().css("display","none");
+      }
+    });
+  </script>
+{% endblock %}
+
+
+
+
+       

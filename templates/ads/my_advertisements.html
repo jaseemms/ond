@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block content %}
+{% if instances %}
+	<section id="content">
+	<section class="wrapper">
+	<div id="advertisements">
+		{% for instance in instances %}
+			<div class="ad card">
+				<div class="first left">
+					<a href="{% url 'ads:view_advertisement' instance.pk %}">
+						<img src="{{instance.image1.url}}"/>
+					</a>
+				</div>
+				<div class="second">
+					<h2><a href="{% url 'ads:view_advertisement' instance.pk %}">{{instance.title}}</a></h2>
+					<p>{{instance.category}} &gt;&gt; {{instance.subcategory}}</p>
+					<p>{{instance.region}} {% if instance.city %}&gt;&gt; {{instance.city}}{% endif %}</p>
+					<small>{{instance.date_updated|date:'d-m-Y'}}</small>
+				</div>
+				<br class="clear" />
+			</div>
+		{% endfor %}
+	</div>
+	<div class="card pagination">
+	    <span class="step-links">
+	        {% if instances.has_previous %}
+	            <a href="?page={{ instances.previous_page_number }}">previous</a>
+	        {% endif %}
+
+	        <span class="current">
+	            Page {{ instances.number }} of {{ instances.paginator.num_pages }}
+	        </span>
+
+	        {% if instances.has_next %}
+	           <a href="?page={{ instances.next_page_number }}">next</a>
+	        {% endif %}
+	    </span>
+	</div>
+	</section>
+	</section>
+	{% endif %}
+{% endblock %}

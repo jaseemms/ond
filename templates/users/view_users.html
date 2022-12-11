@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+
+
+<section id="content">
+<section class="wrapper">
+    <div class="card">
+    	<form method="get" action="{% url 'users:view_users' %}">
+	    	<input type="text" name="query">
+	    	<button type="submit">Submit</button>
+    	</form>
+        {% if instances %}
+		<table id = "view_users">
+		<tr>
+			<th>Name</th>
+			<th>Username</th>
+			<th>Phone</th>
+			<th>ID</th>
+			<th>Action</th>
+		</tr>
+		{% for instance in instances %}
+		<tr>
+			<td><a href="{% url 'users:view_user' instance.pk %}" >{{instance.name}}</a></td>
+			<td><a href="{% url 'users:view_user' instance.pk %}" >{{instance.username}}</a></td>
+			<td><a href="{% url 'users:view_user' instance.pk %}" >{{instance.phone}}</a></td>
+			<td><a href="{% url 'users:view_user' instance.pk %}" >{{instance.id}}</a></td>
+			<td>
+				<a href="{% url 'users:activate' instance.pk %}">
+				{% if instance.is_active %} Deactivate {% else %} Activate{% endif %}
+				</a>
+			</td>
+		</tr>
+		{% endfor %}
+		</table>
+		{% else %}
+			<br/>Nothing Found.
+		{% endif %}
+    </div>
+</section>
+</section>
+{% endblock %}

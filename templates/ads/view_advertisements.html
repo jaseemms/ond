@@ -1,0 +1,249 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+{% load templatetags %}
+
+
+{% block form %}
+<section id="middle">
+<section class="wrapper">
+<div class="card">
+	<form method="POST" action="" enctype="multipart/form-data">
+		{% csrf_token %}
+		<div class="fieldWrapper">
+			{{ form.country }}
+		</div>
+		<div class="fieldWrapper">
+			{{ form.region }}
+		</div>
+		<div class="fieldWrapper">
+			{{ form.city }}
+		</div>
+		<div class="fieldWrapper">
+			{{ form.category }}
+		</div>
+		<div class="fieldWrapper">
+			{{ form.subcategory }}
+		</div>
+		<div class="fieldWrapper">
+	        <input type="text" class="search" placeholder="Search" name="search">
+	        <button type="submit">Search</button>
+	    </div>
+	    <br class="clear">
+		{% if subcategory_obj %}
+			{% for property in subcategory_obj.property_ptr.all %}
+				<div class="property fieldWrapper">
+					<label>{{property.property_name}}:</label>
+					<select name="{{property.property_name}}">
+						<option value="">All</option>
+					{% for property_value in property.propertyvalue_set.all %}
+						{% if forloop.counter0 == 0 %}
+						<option {% if property_value.pk|stringformat:'s' in property_value_list %}selected="selected"{% endif %} value="{{property_value.pk}}">&lt; {{property_value}} {{property.property_symbol}}
+							</option>
+						{% elif forloop.last %}
+						<option {% if property_value.pk|stringformat:'s' in property_value_list %}selected="selected"{% endif %} value="{{property_value.pk}}">&gt; {{property.propertyvalue_set.all|previous:forloop.counter0}} {{property.property_symbol}}
+						</option>
+						{% else %}
+							<option {% if property_value.pk|stringformat:'s' in property_value_list %}selected="selected"{% endif %} value="{{property_value.pk}}">{{property.propertyvalue_set.all|previous:forloop.counter0}} - {{property_value}} {{property.property_symbol}}
+							</option>
+						{% endif %}
+					{% endfor %}
+					</select>
+				</div>
+			{% endfor %}
+
+			{% for label in subcategory_obj.label.all %}
+				<div class="label fieldWrapper">
+					<label>{{label.label_name}}:</label>
+					<select name="{{label.label_name}}">
+						<option value="">All</option>
+					{% for label_value in label.labelvalue_set.all %}
+						<option {% if label_value.pk|stringformat:'s' in label_value_list %}selected="selected"{% endif %} value="{{label_value.pk}}">{{label_value}}</option>	
+					{% endfor %}
+					</select>
+				</div>
+			{% endfor %}
+
+			{% if prices %}
+				<div class="price fieldWrapper">
+					<label>{% if subcategory_obj.has_price %}Price :{% else %}Salary {% endif %}</label>
+					<select name="price">
+						<option value="">All</option>
+					{% for price in prices %}
+						{% if forloop.counter0 == 0 %}
+						<option {% if price.pk|stringformat:'s' == price_id %}selected="selected"{% endif %} value="{{price.pk}}">&lt; {{price}}
+							</option>
+						{% elif forloop.last %}
+						<option {% if price.pk|stringformat:'s' == price_id %}selected="selected"{% endif %} value="{{price.pk}}">&gt; {{prices|previous:forloop.counter0}}
+						</option>
+						{% else %}
+							<option {% if price.pk|stringformat:'s' == price_id %}selected="selected"{% endif %} value="{{price.pk}}">{{prices|previous:forloop.counter0}} - {{price}}
+							</option>
+						{% endif %}
+					{% endfor %}
+					</select>
+				</div>
+			{% endif %}
+		{% endif %}
+
+		<select id="list_option" name="list_option" style="display: none;">
+			<option value="false">False</option>
+			<option value="true">True</option>
+		</select>
+		<input type="number" class="page" name="page" style="display: none;"/>
+		<br class="clear">
+	</form>
+	</div>
+	</section>
+</section>
+{% endblock %}
+
+
+{% block content %}
+
+	{% if category_list_items and not category_obj %}
+		<section id="list">
+		<section class="wrapper">
+			<ul>
+				{% for category_list_item in category_list_items %}
+					<li class="category">
+						<a href="javascript:void(0)" value="{{category_list_item.pk}}">
+						<img src="{{category_list_item.image.url}}" />
+						<b>{{category_list_item}}</b>
+						</a>
+					</li>
+				{% endfor %}
+			</ul>
+			<br class="clear">
+		</section><!--(list > .wrapper)-->
+		</section><!--(list)-->
+	{% endif %}
+
+	{% if category_list_items and category_obj %}
+	<section id="categories">
+	<section class="wrapper">
+		<section class="sidebar">
+			<div class="main">
+				<h4>Main Categories</h4>
+				<h4><a id="all-ads" href="javascript:void(0)">All Ads</a></h4>
+				<ul>
+					{% for category_list_item in category_list_items %}
+					<li class="category {% if category_obj == category_list_item %}active{% endif %}">
+						<a href="javascript:void(0)" value="{{category_list_item.pk}}">{{category_list_item}}
+						</a>
+					</li>
+				{% endfor %}
+				</ul>
+			</div>
+		</section>
+
+		<section class="content">
+			<div class="top">
+				<small >
+					<img src="{{category_obj.image.url}}" />
+				</small>
+				<h4>{{category_obj}}</h4>
+				<a id="all-ads-second" href="javascript:void(0)" class="button right">View all Ads</a>
+				<br class="clear" />
+			</div>
+			<div class="bottom">
+				<ul>
+					{% for subcategory_list_item in subcategory_list_items %}
+					<li class="subcategory">
+						<a href="javascript:void(0)" value="{{subcategory_list_item.pk}}">
+							<img src="{{subcategory_list_item.image.url}}">
+							<b>{{subcategory_list_item}}</b>
+						</a>
+					</li>
+					{% endfor %}
+				</ul>
+				<br class="clear" />
+			</div>
+		</section>
+		<br class="clear" />
+	</section>
+</section>
+{% endif %}
+
+	{% if instances %}
+	<section id="content">
+	<section class="wrapper">
+	<div id="advertisements">
+		{% for instance in instances %}
+			<div class="ad card">
+				<div class="first left">
+					<a href="{% url 'ads:view_advertisement' instance.pk %}">
+						<img src="{{instance.image1.url}}"/>
+					</a>
+				</div>
+				<div class="second">
+					<h2><a href="{% url 'ads:view_advertisement' instance.pk %}">{{instance.title}}</a></h2>
+
+					{% if instance.premium %}<small class="premium">Premium&nbsp;</small>{% endif %}
+					{% if not instance.active and request.user.is_superuser %}<small class="inactive">Inactive&nbsp;</small>{% endif %}
+
+					<p>{{instance.category}} &gt;&gt; {{instance.subcategory}}</p>
+					<p>{{instance.region}} {% if instance.city %}&gt;&gt; {{instance.city}}{% endif %}</p>
+					<small>{{instance.date_updated|date:'d-m-Y'}}</small>
+					<a href="{% url 'users:create_mail' instance.user.pk instance.pk %}" class="message">Message</a>
+				</div>
+				<br class="clear" />
+			</div>
+		{% endfor %}
+	</div>
+	<div class="card pagination">
+	    <span class="step-links">
+	        {% if instances.has_previous %}
+	            <a id="previous" href="javascript:void(0)">previous</a>
+	        {% endif %}
+
+	        <span class="current">
+	            Page {{ instances.number }} of {{ instances.paginator.num_pages }}
+	        </span>
+
+	        {% if instances.has_next %}
+	            <a id="next" href="javascript:void(0)">next</a>
+	        {% endif %}
+	    </span>
+	</div>
+	</section>
+	</section>
+	{% endif %}
+{% endblock %}
+
+{% block static %}
+{% load static %}
+<script>
+	$('#id_country,#id_region,#id_city,#id_category,#id_subcategory,.price select,.property select,\
+		.label select').on('change',function(){
+		$('form').submit();
+	});
+	$('#id_subcategory').on('change',function(){
+		$('.price,.property,.label').remove();
+	});
+	$('li.category a').on('click',function(){
+		var category_id = $(this).attr("value");
+		$('#id_category').val(category_id);
+		$('#list_option').val('true');
+		$('form').submit();
+	});
+	$('li.subcategory a').on('click',function(){
+		var subcategory_id = $(this).attr("value");
+		$('#id_subcategory').val(subcategory_id);
+		$('form').submit();
+	});
+	$('#all-ads,#all-ads-second').on('click',function(){
+		$('form').submit();
+	});
+	$('#next').on('click',function(){
+		var next = "{% if instances.has_next %}{{ instances.next_page_number }}{% endif %}";
+		$('form input.page').val(next);
+		$('form').submit();
+	});
+	$('#previous').on('click',function(){
+		var previous = "{% if instances.has_previous %}{{ instances.previous_page_number}}{% endif %}";
+		$('form input.page').val(previous);
+		$('form').submit();
+	});
+</script>
+{% endblock %}

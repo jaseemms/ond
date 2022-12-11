@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section id="content">
+	<section class="wrapper">
+	<div class='single-ad card'>
+		<h2>{{instance.title}}</h2>
+		<p>{{instance.category}} &gt;&gt; {{instance.subcategory}}</p>
+		<p>{{instance.region}} {% if instance.city %}&gt;&gt; {{instance.city}}{% endif %}</p>
+
+		<p>ID : {{instance.id}}</p>
+
+		{% if request.user.is_superuser and instance.user %}
+			<p>User Id: {{instance.user.pk}}</p>
+		{% endif %}
+
+		<img src="{{instance.image1.url}}" />
+		{% if instance.image2 %}
+			<img src="{{instance.image2.url}}"/>
+		{% endif %}
+
+		{% if instance.image3 %}
+			<img src="{{instance.image3.url}}"/>
+		{% endif %}
+
+		{% if instance.image4 %}
+			<img src="{{instance.image4.url}}"/>
+		{% endif %}
+
+		<p>{{instance.description}}</p>
+
+		{% for label in instance.label_value.all %}
+			<p>{{label.label}} : {{label.label_value}}</p>
+		{% endfor %}
+
+		{% for property in instance.property_value.all %}
+			<p>{{property.property_ptr}} : {{property.property_value}} {{property.property_symbol}}</p>
+		{% endfor %}
+
+		{% if instance.subcategory.has_price %}
+			<span>Price : {{instance.price}} {{instance.currency}}</span>
+		{% endif %}
+		{% if instance.subcategory.is_job %}
+			<p>Salary : {{instance.price}} {{instance.currency}}</p>
+		{% endif %}
+
+			<p>	
+				{% if request.user == instance.user or request.user.is_superuser %}
+				<a class="message" href="{% url 'ads:delete_advertisement' instance.pk %}">Delete</a>
+				<a class="message" href="{% url 'ads:edit_advertisement' instance.pk %}">Edit</a>
+				{% endif %}
+				{% if request.user != instance.user %}
+				<a href="{% url 'users:create_mail' instance.user.pk instance.pk %}" class="message">Message</a>
+				{% endif %}
+				{% if request.user.is_superuser %}
+					<a class="message" href="{% url 'ads:ad_activate' instance.pk %}">
+						{% if instance.active %} Deactivate {% else %} Activate {% endif %}
+					</a>
+					<a class="message" href="{% url 'ads:premium' instance.pk %}">
+						{% if instance.premium %} Remove Premium {% else %} Make Premium {% endif %}
+					</a>
+				{% endif %}
+				<br class="clear">
+			</p>
+	</div>
+</section>
+</section>
+{% endblock %}
+
+{% block static %}
+{% endblock %}

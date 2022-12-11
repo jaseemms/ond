@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %} 
+<section id="content">
+<section class="wrapper">
+    <div class="card">
+        <h2 class="section-heading">Successfully Logged Out</h2>
+        {% block breadcrumbs %}<div class="breadcrumbs">Go To <a href="/">{% trans 'Home' %}</a></div>{% endblock %}
+		<br>
+        <p class="lead">{% trans "Thanks for spending some quality time with the Website today." %}</p>
+    </div>
+</section>
+</section>
+
+{% endblock %}

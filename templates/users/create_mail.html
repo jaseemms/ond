@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<section id="content">
+<section class="wrapper">
+<div class="card">
+    <h2>{{ title }}</h2>
+        
+        <form action="." method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="fieldWrapper">
+                {{ form.phone.errors }}
+                <label>Phone Number : </label>
+                {{ form.phone }}
+            </div>
+            <div class="fieldWrapper">
+                {{ form.message.errors }}
+                <label>Message : </label>
+                {{ form.message }}
+            </div>
+            
+            <button type="submit" value="Submit" class="button button-block"/>Submit</button>
+        
+        </form>
+</div>
+</section>
+</section>
+{% endblock %}
